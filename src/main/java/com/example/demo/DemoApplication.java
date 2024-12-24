@@ -11,7 +11,7 @@ import com.example.demo.service.DemoService;
 @SpringBootApplication
 @Import(LoggingAspect.class)
 public class DemoApplication implements CommandLineRunner {
-
+    
 	private final DemoService demoService;
 
     public DemoApplication(DemoService demoService) {
@@ -24,6 +24,6 @@ public class DemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        demoService.performTask();
+        this.demoService.performTask();
     }
 }

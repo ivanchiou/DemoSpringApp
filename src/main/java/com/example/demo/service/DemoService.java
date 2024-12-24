@@ -12,6 +12,7 @@ public class DemoService {
 
     // 根據名字查詢使用者
     public DemoModel getUserByName(String name) {
+        System.out.println("GetUserByName is being executed.");
         return this.demoRepository.findByName(name);
     }
 
