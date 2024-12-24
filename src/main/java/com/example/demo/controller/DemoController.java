@@ -45,13 +45,20 @@ public class DemoController {
         }
         // Save the model to the database
         String name = (String) jsonBody.get("name");
+        if (name == null) {
+            throw new RuntimeException("name can't be null");
+        }
         DemoModel savedModel = demoService.createUserByName(name);
         return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
     }
 
     @GetMapping("/model/{name}")
     public DemoModel getUserByName(@PathVariable String name) {
-        return demoService.getUserByName(name);
+        DemoModel demoModel = demoService.getUserByName(name);
+        if(demoModel == null) {
+            throw new RuntimeException("demoModel can't be null");
+        }
+        return demoModel;
     }
 
     @ExceptionHandler(Exception.class)
