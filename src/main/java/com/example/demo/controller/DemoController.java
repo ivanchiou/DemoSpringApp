@@ -2,12 +2,16 @@ package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 import java.util.Map;
 
 import com.example.demo.model.DemoModel;
@@ -33,8 +37,12 @@ public class DemoController {
     }
 
     @PostMapping("/model/register")
-    public ResponseEntity<DemoModel> register(
-        @RequestBody Map<String, Object> jsonBody) {
+    public ResponseEntity<?> register(
+        @Valid @RequestBody Map<String, Object> jsonBody,
+        BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>("Validation errors: " + result.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
         // Save the model to the database
         String name = (String) jsonBody.get("name");
         DemoModel savedModel = demoService.createUserByName(name);
@@ -44,5 +52,10 @@ public class DemoController {
     @GetMapping("/model/{name}")
     public DemoModel getUserByName(@PathVariable String name) {
         return demoService.getUserByName(name);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception e, Model model) {
+        return String.format("error: %s", e.getMessage());
     }
 }
