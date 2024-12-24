@@ -14,4 +14,8 @@ public class DemoService {
     public DemoModel getUserByName(String name) {
         return this.demoRepository.findByName(name);
     }
+
+    public void performTask() {
+        System.out.println("Task is being performed.");
+    }
 }
