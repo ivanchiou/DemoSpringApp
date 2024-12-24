@@ -54,8 +54,13 @@ public class DemoController {
         return demoService.getUserByName(name);
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, Model model) {
-        return String.format("error: %s", e.getMessage());
+    // @ExceptionHandler(Exception.class)
+    // public String handleException(Exception e, Model model) {
+    //     return String.format("error: %s", e.getMessage());
+    // }
+
+    @GetMapping("/runtime")
+    public String triggerRuntimeException() {
+        throw new RuntimeException("This is a runtime exception.");
     }
 }
