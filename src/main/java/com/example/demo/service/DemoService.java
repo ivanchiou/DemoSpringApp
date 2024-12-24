@@ -14,4 +14,10 @@ public class DemoService {
     public DemoModel getUserByName(String name) {
         return this.demoRepository.findByName(name);
     }
+
+    public DemoModel createUserByName(String name) {
+        DemoModel model = new DemoModel();
+        model.setName(name);
+        return this.demoRepository.save(model);
+    }
 }
