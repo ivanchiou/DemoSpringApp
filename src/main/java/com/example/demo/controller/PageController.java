@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/page")
 public class PageController {
     @GetMapping("/")
-    public String test(
+    public String index(
         @RequestParam(value = "message", required = false, defaultValue = "您好Java Spring!") String message,
         @RequestParam(value = "description", required = false, defaultValue = "我是描述!") String description,
         Model model
@@ -18,6 +18,13 @@ public class PageController {
         model.addAttribute("message", message);
         model.addAttribute("description", description);
         return "index";
+    }
+
+    @GetMapping("/card")
+    public String card(
+        Model model
+    ) {
+        return "card";
     }
 
     @ExceptionHandler(Exception.class)
