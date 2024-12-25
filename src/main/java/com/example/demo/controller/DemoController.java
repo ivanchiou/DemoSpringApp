@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import java.util.Map;
 
 import com.example.demo.model.DemoModel;
+import com.example.demo.model.DemoModelRequestEntity;
 import com.example.demo.service.DemoService;
 
 @RestController
@@ -38,16 +40,17 @@ public class DemoController {
 
     @PostMapping("/model/register")
     public ResponseEntity<?> register(
-        @Valid @RequestBody Map<String, Object> jsonBody,
+        @Valid @ModelAttribute DemoModelRequestEntity modelBody,
         BindingResult result) {
         if (result.hasErrors()) {
             return new ResponseEntity<>("Validation errors: " + result.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
-        // Save the model to the database
-        String name = (String) jsonBody.get("name");
+        String name = modelBody.getName();
         if (name == null) {
             throw new RuntimeException("name can't be null");
         }
+        System.out.println(name);
+        // Save the model to the database
         DemoModel savedModel = demoService.createUserByName(name);
         return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
     }
