@@ -27,6 +27,13 @@ public class PageController {
         return "card";
     }
 
+    @GetMapping("/example")
+    public String example(
+        Model model
+    ) {
+        return "example";
+    }
+
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e, Model model) {
         model.addAttribute("error", e.getMessage());
