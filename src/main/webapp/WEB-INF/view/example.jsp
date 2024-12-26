@@ -19,7 +19,7 @@
         };
         function onClickBtn(e) {
             console.log(e); // 事件對象            
-            alert(`按鈕已被點擊！(使用onclick)事件類型: ${e.type}, 按鈕 ID: ${e.target.id}`);
+            alert(`按鈕已被點擊！(使用onclick)事件類型: ${"${e.type}"}, 按鈕 ID: ${"${e.target.id}"}`);
         }
         function changeContent() {
             let element = document.getElementById("changeContentBtn");
