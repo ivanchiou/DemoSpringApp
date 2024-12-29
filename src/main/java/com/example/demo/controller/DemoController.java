@@ -32,10 +32,12 @@ public class DemoController {
 
     @GetMapping("/model")
     public ResponseEntity<DemoModel> getModel(
-            @RequestParam int id, 
-            @RequestParam(required = false, defaultValue = "Test") String name) {
-        DemoModel model = new DemoModel(id, name);
-        return new ResponseEntity<>(model, HttpStatus.OK);
+            @RequestParam int id) {
+        DemoModel demoModel = demoService.getUserByID(id);
+        if(demoModel == null) {
+            throw new RuntimeException("demoModel can't be null");
+        }
+        return new ResponseEntity<>(demoModel, HttpStatus.OK);
     }
 
     @PostMapping("/model/register")

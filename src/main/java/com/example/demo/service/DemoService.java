@@ -15,6 +15,10 @@ public class DemoService {
         return this.demoRepository.findByName(name);
     }
 
+    public DemoModel getUserByID(int id) {
+        return this.demoRepository.findByID(id);
+    }
+
     public DemoModel createUserByName(String name) {
         DemoModel model = new DemoModel();
         model.setName(name);

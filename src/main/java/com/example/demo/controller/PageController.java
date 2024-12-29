@@ -41,6 +41,13 @@ public class PageController {
         return "jquery";
     }
 
+    @GetMapping("/ajax")
+    public String ajax(
+        Model model
+    ) {
+        return "ajax";
+    }
+
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e, Model model) {
         model.addAttribute("error", e.getMessage());
