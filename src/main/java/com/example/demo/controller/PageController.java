@@ -41,6 +41,13 @@ public class PageController {
         return "jquery";
     }
 
+    @GetMapping("/checkusername")
+    public String checkusername(
+        Model model
+    ) {
+        return "checkusername";
+    }
+
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e, Model model) {
         model.addAttribute("error", e.getMessage());

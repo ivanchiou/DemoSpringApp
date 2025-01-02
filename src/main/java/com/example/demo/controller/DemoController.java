@@ -55,6 +55,13 @@ public class DemoController {
         return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
     }
 
+    @PostMapping("/model/check-username") 
+    public Map<String, Boolean> checkUsername(@RequestParam String username) {
+        boolean isAvailable = !demoService.checkUserName(username.toLowerCase());
+        return Map.of("isAvailable", isAvailable);
+    }
+
+
     @GetMapping("/model/{name}")
     public DemoModel getUserByName(@PathVariable String name) {
         DemoModel demoModel = demoService.getUserByName(name);
