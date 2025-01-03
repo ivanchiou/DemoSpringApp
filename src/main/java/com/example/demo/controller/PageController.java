@@ -48,6 +48,13 @@ public class PageController {
         return "checkusername";
     }
 
+    @GetMapping("/upload")
+    public String upload(
+        Model model
+    ) {
+        return "upload";
+    }
+
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e, Model model) {
         model.addAttribute("error", e.getMessage());
