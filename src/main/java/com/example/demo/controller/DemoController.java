@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,6 +97,28 @@ public class DemoController {
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>("Failed to upload " + file.getOriginalFilename(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String fileName) {
+        try {
+            // Define the file path
+            Path filePath = Paths.get("uploads/").resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            // Check if the resource is accessible
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

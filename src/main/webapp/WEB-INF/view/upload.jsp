@@ -14,5 +14,12 @@
         <br><br>
         <button type="submit">Upload</button>
     </form>
+    <h1>Download a File</h1>
+    <form method="get" action="/download">
+        <label for="filename">Enter the file name:</label>
+        <input type="text" id="filename" name="filename" required>
+        <br><br>
+        <button type="submit">Download</button>
+    </form>
 </body>
 </html>
