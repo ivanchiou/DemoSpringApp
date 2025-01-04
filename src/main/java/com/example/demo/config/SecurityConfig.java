@@ -9,9 +9,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import static org.springframework.security.config.Customizer.withDefaults;
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -23,33 +27,24 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authroize -> authroize
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() 
-                .requestMatchers("/api/auth/**").permitAll() 
-                .requestMatchers("/api/hello", "/api/users/**", "/api/threads/**").authenticated()
-                .anyRequest().permitAll())
-            .formLogin(form -> form
-                .loginPage("/page/login") // 自定義登入頁面（可選）
-                .defaultSuccessUrl("/api/hello", true) // 登入成功後跳轉
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/page/login?logout=true") // 登出後跳轉
-                .permitAll()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))  // 默認模式
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException)->{
-                    System.err.println("401 error");
-                    response.sendRedirect("/page/login"); // 導向預設登入頁
-                }));
+                .anyRequest().authenticated())
+            .formLogin(withDefaults());
         
         return http.build();
     }
 
     @Bean
-    public InMemoryUserDetailsManager users() {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("ivan").password("{noop}password").authorities("read").build());
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        // 配置 JdbcUserDetailsManager 並設置查詢語句（如果需要自定義）
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+
+        // 默認查詢語句（可省略，只有當資料表結構不一致時才需修改）
+        jdbcUserDetailsManager.setUsersByUsernameQuery(
+            "SELECT username, password, enabled FROM users WHERE username = ?");
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(
+            "SELECT username, authority FROM authorities WHERE username = ?");
+
+        return jdbcUserDetailsManager;
     }
 
     @Bean
