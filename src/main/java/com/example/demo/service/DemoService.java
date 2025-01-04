@@ -15,6 +15,10 @@ public class DemoService {
         return this.demoRepository.findByName(name);
     }
 
+    public DemoModel getUserByID(int id) {
+        return this.demoRepository.findByID(id);
+    }
+
     public boolean checkUserName(String name) {
         return this.demoRepository.existsByName(name);
     }
