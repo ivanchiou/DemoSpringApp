@@ -55,6 +55,13 @@ public class PageController {
         return "upload";
     }
 
+    @GetMapping("/login")
+    public String login(
+        Model model
+    ) {
+        return "login";
+    }
+
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e, Model model) {
         model.addAttribute("error", e.getMessage());
