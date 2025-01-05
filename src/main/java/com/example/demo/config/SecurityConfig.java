@@ -7,14 +7,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import static org.springframework.security.config.Customizer.withDefaults;
 import javax.sql.DataSource;
 
 @Configuration
@@ -26,10 +22,20 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authroize -> authroize
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() 
-                .anyRequest().authenticated())
-            .formLogin(withDefaults());
-        
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/page/login").permitAll()
+                .requestMatchers("/page/**").authenticated()
+                .anyRequest().permitAll())
+            .formLogin(form -> form
+                .loginPage("/page/login") // 自定義登入頁面
+                .loginProcessingUrl("/api/auth/login") // 登入請求的路徑
+                .defaultSuccessUrl("/page/card", true) // 登入成功後跳轉的頁面
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/page/login?logout=true") // 登出後跳轉的頁面
+                .permitAll()
+            );
+
         return http.build();
     }
 
