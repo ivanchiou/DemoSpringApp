@@ -14,22 +14,23 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Authentication", description = "Operations for authentication")
+@Tag(name = "API", description = "Operations for APIController")
 @RequestMapping("/api")
 public class APIController {
 
     @Autowired
     private DemoService demoService;
 
+    @Operation(summary = "Test API hello", description = "Test API hello")
     @GetMapping("/hello")
     public String sayHello() {
         return "Hello, Swagger!";
     }
 
-    @Operation(summary = "Register a new account", description = "Register a new account to the system")
+    @Operation(summary = "Get user model by ID", description = "Get user model by ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Account created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input provided")
+            @ApiResponse(responseCode = "200", description = "Get user model successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input provided") // bad request
     })
     @GetMapping("/users/{id}")
     public DemoModel getUserByID(@PathVariable int id) {
