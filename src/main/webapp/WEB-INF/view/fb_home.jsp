@@ -7,5 +7,6 @@
 	<h1>This is fb oauth2 home page</h1>
     <p>name: ${name}</p>
     <p>email: ${email}</p>
+    <p>token: ${token}</p>
 </body>
 </html>
