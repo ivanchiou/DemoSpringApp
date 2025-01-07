@@ -2,6 +2,7 @@ package com.example.demo.controller;
 import java.util.Date;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.Authentication;
 
 @Controller
 @RequestMapping("/page")
@@ -75,20 +77,21 @@ public class PageController {
         return "login";
     }
 
-    @GetMapping("/fb_login")
-    public String fb_login(
-        Model model
-    ) {
-        return "fb_login";
-    }
-
-    @GetMapping("/fb_success")
-    public String fb_success(
+    @GetMapping("/success")
+    public String login_success(
         @AuthenticationPrincipal OAuth2User principal,
         Model model
     ) {
-        String name = principal.getAttribute("name");
-        String email = principal.getAttribute("email");
+        String name = "";
+        String email = "";
+        if (principal != null) {
+            name = principal.getAttribute("name");
+            email = principal.getAttribute("email");
+        } else {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            name = authentication.getName();
+        }
+        
         model.addAttribute("name", name);
         model.addAttribute("email", email);
 
@@ -103,7 +106,7 @@ public class PageController {
 
         model.addAttribute("token", token);
 
-        return "fb_success";
+        return "success";
     }
     
 

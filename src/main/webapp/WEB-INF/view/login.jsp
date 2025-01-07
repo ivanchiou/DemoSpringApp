@@ -79,6 +79,11 @@
                 <button type="submit">Login</button>
             </div>
         </form>
+        <p>
+            <a href="/oauth2/authorization/facebook">
+                <button>Login with Facebook</button>
+            </a>
+        </p>
         <div class="footer">
             <p>© 2025 Spring Security Login Page</p>
         </div>

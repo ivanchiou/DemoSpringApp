@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -93,5 +94,26 @@ public class APIController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        // 獲取當前會話並使其失效
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        // 清理 SecurityContext
+        SecurityContextHolder.clearContext();
+
+        // 刪除 Cookie（如果需要）
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0); // 立即失效
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Map.of("message", "Logout successful"));
     }
 }

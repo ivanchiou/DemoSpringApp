@@ -27,18 +27,21 @@ public class SecurityConfig {
                 .requestMatchers("/page/**").authenticated()
                 .anyRequest().permitAll())
             .oauth2Login(oauth2 -> oauth2
-                .loginPage("/page/fb_login")
-                .defaultSuccessUrl("/page/fb_success", true)
+                .loginPage("/page/login")
+                .defaultSuccessUrl("/page/success", true)
                 .permitAll()
             )
             .formLogin(form -> form
                 .loginPage("/page/login") // 自定義登入頁面
                 .loginProcessingUrl("/api/auth/login") // 登入請求的路徑
-                .defaultSuccessUrl("/page/card", true) // 登入成功後跳轉的頁面
+                .defaultSuccessUrl("/page/success", true) // 登入成功後跳轉的頁面
                 .permitAll()
             )
             .logout(logout -> logout
+                .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/page/login?logout=true") // 登出後跳轉的頁面
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
             );
 
