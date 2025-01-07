@@ -23,8 +23,14 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authroize -> authroize
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/page/login").permitAll()
+                .requestMatchers("/api/**").authenticated()
                 .requestMatchers("/page/**").authenticated()
                 .anyRequest().permitAll())
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/page/fb_login")
+                .defaultSuccessUrl("/page/fb_success", true)
+                .permitAll()
+            )
             .formLogin(form -> form
                 .loginPage("/page/login") // 自定義登入頁面
                 .loginProcessingUrl("/api/auth/login") // 登入請求的路徑
