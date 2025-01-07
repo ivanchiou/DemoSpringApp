@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,13 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.Instant;
-import java.util.stream.Collectors;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
+
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 @RequestMapping("/page")
@@ -24,6 +24,9 @@ public class PageController {
 
     @Autowired
     private JwtEncoder jwtEncoder;
+
+    @Value("${jwt.secret-key}")
+    private String SECRET_KEY;
 
     @GetMapping("/")
     public String index(
@@ -46,22 +49,14 @@ public class PageController {
         model.addAttribute("name", name);
         model.addAttribute("email", email);
 
-        // 獲取當前的 Authentication 對象
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 生成 JWT Claims
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self") // Token 發行者
-                .subject(name) // Token 主題
-                .issuedAt(Instant.now()) // Token 發行時間
-                .expiresAt(Instant.now().plusSeconds(3600)) // Token 過期時間
-                .claim("roles", authentication.getAuthorities().stream()
-                        .map(Object::toString)
-                        .collect(Collectors.toList())) // 添加用戶角色信息
-                .build();
-
-        // 生成 JWT Token
-        String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        String token = Jwts.builder()
+                .setHeaderParam("alg", SignatureAlgorithm.HS256.getValue())
+                .setSubject(name)
+                .setIssuer("self")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
+                .signWith(new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256"), SignatureAlgorithm.HS256)
+                .compact();
 
         // 返回 JWT Token 給Client端
         model.addAttribute("token", token);
