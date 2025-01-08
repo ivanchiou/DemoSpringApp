@@ -14,8 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.model.DemoModel;
 import com.example.demo.model.UserModelRequestEntity;
@@ -31,6 +33,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 
 @RestController
@@ -61,6 +64,13 @@ public class APIController {
             throw new RuntimeException("demoModel can't be null");
         }
         return demoModel;
+    }
+
+    @PatchMapping("/admin/users/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public Map<String, Boolean> setUserNameByID(@PathVariable int id, @RequestParam String name) {
+        boolean isSuccess = this.demoService.updateUserName(id, name);
+        return Map.of("success", isSuccess);
     }
 
     @PostMapping("/auth/login")

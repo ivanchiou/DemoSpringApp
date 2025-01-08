@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -30,8 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        
+        Pattern PROTECTED_PATHS_PATTERN = Pattern.compile("^/api/(users|admin).*");
 
-        if (!request.getRequestURI().startsWith("/api/")) { // 只處理 /api/ 路徑的請求
+        if (!PROTECTED_PATHS_PATTERN.matcher(request.getRequestURI()).matches()) { // 只處理 /api/ 路徑的請求
             filterChain.doFilter(request, response);
             return;
         }

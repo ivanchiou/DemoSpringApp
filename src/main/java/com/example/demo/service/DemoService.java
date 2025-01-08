@@ -23,6 +23,12 @@ public class DemoService {
         return this.demoRepository.existsByName(name);
     }
 
+    public boolean updateUserName(int id, String name) {
+        DemoModel model = this.demoRepository.findByID(id);
+        model.setName(name);
+        return this.demoRepository.save(model) != null ? true : false;
+    }
+
     public DemoModel createUserByName(String name) {
         DemoModel model = new DemoModel();
         model.setName(name);
