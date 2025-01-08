@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 import java.util.Date;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 @Controller
 @RequestMapping("/page")
@@ -84,23 +88,30 @@ public class PageController {
     ) {
         String name = "";
         String email = "";
+        Collection<? extends GrantedAuthority> roles = List.of(); // 初始化角色列表
         if (principal != null) {
             name = principal.getAttribute("name");
             email = principal.getAttribute("email");
         } else {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             name = authentication.getName();
+            roles = authentication.getAuthorities();
         }
         
         model.addAttribute("name", name);
         model.addAttribute("email", email);
+
+        List<String> roleNames = roles.stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
 
         String token = Jwts.builder()
             .setHeaderParam("alg", SignatureAlgorithm.HS256.getValue())
             .setSubject("name")
             .setIssuer("self")
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + 3600))
+            .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1小時過期
+            .claim("roles", roleNames) // 添加角色到 Claims
             .signWith(new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256"), SignatureAlgorithm.HS256)
             .compact();
 
