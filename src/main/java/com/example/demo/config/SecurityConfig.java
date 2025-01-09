@@ -5,8 +5,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,20 +26,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+            .addFilterBefore(jwtAuthenticationFilterForApi(), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authroize -> authroize
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/page/login").permitAll()
                 .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/api/admin/users/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .requestMatchers("/page/**").authenticated()
                 .anyRequest().permitAll())
             .oauth2Login(oauth2 -> oauth2
-                .loginPage("/page/fb_login")
-                .defaultSuccessUrl("/page/fb_success", true)
+                .loginPage("/page/login")
+                .defaultSuccessUrl("/page/success", true)
                 .permitAll()
             )
             .formLogin(form -> form
                 .loginPage("/page/login") // 自定義登入頁面
                 .loginProcessingUrl("/api/auth/login") // 登入請求的路徑
-                .defaultSuccessUrl("/page/card", true) // 登入成功後跳轉的頁面
+                .defaultSuccessUrl("/page/success", true) // 登入成功後跳轉的頁面
                 .permitAll()
             )
             .logout(logout -> logout
@@ -63,5 +74,17 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilterForApi() {
+        return new JwtAuthenticationFilter() {
+            @Override
+            protected boolean shouldNotFilter(HttpServletRequest request) {
+                // 僅對 /api/** 的請求應用此過濾器
+                String path = request.getRequestURI();
+                return !path.startsWith("/api/");
+            }
+        };
     }
 }   
