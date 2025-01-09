@@ -1,32 +1,29 @@
 package com.example.demo.config;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.demo.component.JwtTokenUtil;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.stream.Collectors;
 import java.util.List;
 import java.util.regex.Pattern;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Value("${jwt.secret-key}")
-    private String SECRET_KEY;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -49,18 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
         try {
-            // 解碼並驗證 Token
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY.getBytes()) // 設置簽名密鑰
-                    .build()
-                    .parseClaimsJws(token) // 驗證並解碼 JWT
-                    .getBody(); // 獲取 Claimss
-
-            // 提取用戶名和角色
-            String username = claims.getSubject();
-            List<SimpleGrantedAuthority> authorities = ((List<String>) claims.get("roles")).stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+            // 解碼並驗證 Token 提取用戶名和角色
+            String username = jwtTokenUtil.extractUsername(token);
+            List<SimpleGrantedAuthority> authorities = jwtTokenUtil.extractAuthorities(token);
 
             // 設置認證上下文
             UsernamePasswordAuthenticationToken authentication =

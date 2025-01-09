@@ -1,5 +1,4 @@
 package com.example.demo.controller;
-import java.util.Date;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,9 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import javax.crypto.spec.SecretKeySpec;
+import com.example.demo.component.JwtTokenUtil;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.core.Authentication;
@@ -25,8 +24,8 @@ import org.springframework.security.core.GrantedAuthority;
 @RequestMapping("/page")
 public class PageController {
 
-    @Value("${jwt.secret-key}")
-    private String SECRET_KEY;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("/")
     public String index(
@@ -105,15 +104,7 @@ public class PageController {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList());
 
-        String token = Jwts.builder()
-            .setHeaderParam("alg", SignatureAlgorithm.HS256.getValue())
-            .setSubject("name")
-            .setIssuer("self")
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1小時過期
-            .claim("roles", roleNames) // 添加角色到 Claims
-            .signWith(new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256"), SignatureAlgorithm.HS256)
-            .compact();
+        String token = jwtTokenUtil.generateToken(name, roleNames);
 
         model.addAttribute("token", token);
 

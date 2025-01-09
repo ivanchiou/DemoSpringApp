@@ -58,6 +58,7 @@ public class APIController {
             @ApiResponse(responseCode = "400", description = "Invalid input provided")
     })
     @GetMapping("/users/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public DemoModel getUserByID(@PathVariable int id) {
         DemoModel demoModel = this.demoService.getUserByID(id);
         if(demoModel == null) {
