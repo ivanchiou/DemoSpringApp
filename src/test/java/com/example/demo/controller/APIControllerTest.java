@@ -74,7 +74,7 @@ class APIControllerTest {
 
         mockMvc.perform(get("/api/users/100")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(status().isInternalServerError()); // 根據程式的邏輯，會拋出 RuntimeException
+                .andExpect(status().isNotFound());
     }
 
     @Test

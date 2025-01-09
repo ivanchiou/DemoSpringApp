@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.example.demo.model.DemoModel;
 import com.example.demo.model.UserModelRequestEntity;
 import com.example.demo.service.DemoService;
@@ -52,17 +54,17 @@ public class APIController {
         return "Hello, Swagger!";
     }
 
-    @Operation(summary = "Register a new account", description = "Register a new account to the system")
+    @Operation(summary = "Get user model by ID", description = "Get user model by ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Account created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input provided")
+            @ApiResponse(responseCode = "200", description = "Get user model successfully"),
+            @ApiResponse(responseCode = "404", description = "Invalid User ID") // bad request
     })
     @GetMapping("/users/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public DemoModel getUserByID(@PathVariable int id) {
         DemoModel demoModel = this.demoService.getUserByID(id);
         if(demoModel == null) {
-            throw new RuntimeException("demoModel can't be null");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the id can't be found");
         }
         return demoModel;
     }
