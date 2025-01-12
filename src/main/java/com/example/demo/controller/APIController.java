@@ -49,6 +49,14 @@ public class APIController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    public void setDemoService(DemoService demoService) {
+        this.demoService = demoService;
+    }
+
     @GetMapping("/hello")
     public String sayHello() {
         return "Hello, Swagger!";

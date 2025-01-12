@@ -12,7 +12,7 @@
     <button onclick="logout()">Logout</button> <!-- 新增的登出按鈕 -->
     <script>
         function logout() {
-            fetch('/auth/logout', {
+            fetch('/api/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/auth/logout")
+                .logoutUrl("/api/auth/logout")
                 .logoutSuccessUrl("/page/login?logout=true") // 登出後跳轉的頁面
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
