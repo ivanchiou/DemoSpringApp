@@ -35,19 +35,33 @@ public class JwtTokenUtil {
     }
 
     public Claims parseToken(String token) throws JwtException {
-        return Jwts.parserBuilder()
+        Claims claims = null;
+        try {
+            claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY.getBytes()) // 設置簽名密鑰
                 .build()
                 .parseClaimsJws(token) // 驗證並解碼 JWT
                 .getBody(); // 獲取 Claims
+        } catch (JwtException e) {
+            System.err.printf("Invalid JWT token: %s%n", e.getMessage());
+            return null;
+        }
+        return claims;
     }
 
     public String extractUsername(String token) {
-        return parseToken(token).getSubject();
+        Claims claims = parseToken(token);
+        if (claims == null) {
+            return null;
+        }
+        return claims.getSubject();
     }
 
     public List<SimpleGrantedAuthority> extractAuthorities(String token) {
         Claims claims = parseToken(token);
+        if (claims == null) {
+            return null;
+        }
         List<String> roles = (List<String>) claims.get("roles"); // 讀取 roles
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)

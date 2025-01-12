@@ -40,8 +40,9 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())) // 設置 CORS 配置
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authroize -> authroize
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/page/login").permitAll()
-                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/page/login", "/api/auth/**").permitAll()
+                .requestMatchers("/api/admin/**, /api/users/**").authenticated()
                 .requestMatchers("/api/admin/users/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")            
                 .requestMatchers("/page/**").authenticated()

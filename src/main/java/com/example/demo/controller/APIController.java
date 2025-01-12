@@ -64,6 +64,7 @@ public class APIController {
     public DemoModel getUserByID(@PathVariable int id) {
         DemoModel demoModel = this.demoService.getUserByID(id);
         if(demoModel == null) {
+            //  throw new RuntimeException("demoModel can't be null");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the id can't be found");
         }
         return demoModel;
@@ -81,7 +82,8 @@ public class APIController {
                                     BindingResult result,
                                     HttpServletRequest request,
                                     HttpServletResponse response) {
-        if (result.hasErrors()) {
+                                        
+        if (result != null && result.hasErrors()) {
             List<String> errorMessages = result.getAllErrors()
                                             .stream()
                                             .map(ObjectError::getDefaultMessage)
