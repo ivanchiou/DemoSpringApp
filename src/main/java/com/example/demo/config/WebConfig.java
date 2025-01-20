@@ -37,16 +37,6 @@ public class WebConfig implements WebMvcConfigurer {
         return new JwtTokenUtil();
     }
 
-    @Bean
-    public FilterRegistrationBean<LoggingFilter> loggingFilterRegistration() {
-        FilterRegistrationBean<LoggingFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new LoggingFilter());
-        registrationBean.addUrlPatterns("/*"); // 應用於所有路徑
-        registrationBean.setName("LoggingFilter");
-        registrationBean.setOrder(1); // 設置過濾器執行順序（數字越小越先執行）
-        return registrationBean;
-    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")

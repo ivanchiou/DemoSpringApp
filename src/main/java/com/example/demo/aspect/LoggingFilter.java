@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.aspect;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -24,21 +24,19 @@ public class LoggingFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         if (request instanceof HttpServletRequest httpRequest) {
-            // 記錄請求的基本資訊
-            logger.info("Incoming request: [{}] {}", httpRequest.getMethod(), httpRequest.getRequestURI());
-
-            // 記錄請求標頭
-            httpRequest.getHeaderNames().asIterator().forEachRemaining(headerName -> 
-                logger.info("Header: {} = {}", headerName, httpRequest.getHeader(headerName))
-            );
-
-            // 如果需要，可以讀取更多請求資訊（例如參數或內容）
+            logRequest(httpRequest);
         }
-
-        // 繼續執行後續的過濾器或請求處理
         chain.doFilter(request, response);
+    }
+
+    public void logRequest(HttpServletRequest request) {
+        logger.info("LoggingFilter: Incoming request [{}] {}", request.getMethod(), request.getRequestURI());
+        request.getHeaderNames().asIterator().forEachRemaining(headerName -> 
+            logger.info("LoggingFilter: Header: {} = {}", headerName, request.getHeader(headerName))
+        );
     }
 
     @Override
