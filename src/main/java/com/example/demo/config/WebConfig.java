@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
@@ -34,6 +35,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public JwtTokenUtil jwtTokenUtil() {
         return new JwtTokenUtil();
+    }
+
+    @Bean
+    public FilterRegistrationBean<LoggingFilter> loggingFilterRegistration() {
+        FilterRegistrationBean<LoggingFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new LoggingFilter());
+        registrationBean.addUrlPatterns("/*"); // 應用於所有路徑
+        registrationBean.setName("LoggingFilter");
+        registrationBean.setOrder(1); // 設置過濾器執行順序（數字越小越先執行）
+        return registrationBean;
     }
 
     @Override
