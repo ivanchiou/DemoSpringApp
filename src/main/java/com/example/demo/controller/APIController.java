@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.model.DemoModel;
 import com.example.demo.model.UserModelRequestEntity;
 import com.example.demo.service.DemoService;
+import com.example.demo.service.UsersService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -47,6 +48,9 @@ public class APIController {
     private DemoService demoService;
 
     @Autowired
+    private UsersService usersService;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
@@ -67,7 +71,7 @@ public class APIController {
             @ApiResponse(responseCode = "200", description = "Get user model successfully"),
             @ApiResponse(responseCode = "404", description = "Invalid User ID") // bad request
     })
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/{id:\\\\\\\\d+}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public DemoModel getUserByID(@PathVariable int id) {
         DemoModel demoModel = this.demoService.getUserByID(id);
@@ -76,6 +80,17 @@ public class APIController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the id can't be found");
         }
         return demoModel;
+    }
+
+    @Operation(summary = "Get user model by Name", description = "Get user model by Name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get user model successfully"),
+    })
+    @GetMapping("/users/{name:[a-zA-Z]+}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public Map<String, Boolean> getUserByName(@PathVariable String name) {
+        boolean isSuccess = this.usersService.findUserByUsername(name);
+        return Map.of("success", isSuccess);
     }
 
     @PatchMapping("/admin/users/{id}")
