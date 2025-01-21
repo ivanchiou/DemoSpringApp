@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import com.example.demo.component.JwtTokenUtil;
+import com.example.demo.util.LoggingFilter;
 
 @Configuration
 @EnableWebMvc
@@ -34,6 +36,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public JwtTokenUtil jwtTokenUtil() {
         return new JwtTokenUtil();
+    }
+
+    @Bean
+    public FilterRegistrationBean<LoggingFilter> loggingFilterRegistration() {
+        FilterRegistrationBean<LoggingFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new LoggingFilter());
+        registrationBean.addUrlPatterns("/api/*");
+        registrationBean.setName("LoggingFilter");
+        registrationBean.setOrder(1);
+        return registrationBean;
     }
 
     @Override
