@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.UserDTO;
 import com.example.demo.model.Users;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,13 @@ public class UsersService {
     @Autowired
     private UserDAOInterface userDAO;
 
-    public Users getUserByID(int id) {
-        return userDAO.findById(id);
+    public UserDTO getUserByID(int id) {
+        Users users = userDAO.findById(id);
+        if (users == null) {
+            return null;
+        }
+        UserDTO userDto = new UserDTO(users.getUsername(), users.getPassword(), users.isEnabled());
+        return userDto;
     }
     
     public boolean findUserByUsername(String username) {

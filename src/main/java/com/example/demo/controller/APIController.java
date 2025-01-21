@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.model.DemoModel;
+import com.example.demo.model.UserDTO;
 import com.example.demo.model.UserModelRequestEntity;
 import com.example.demo.service.DemoService;
 import com.example.demo.service.UsersService;
@@ -71,15 +72,15 @@ public class APIController {
             @ApiResponse(responseCode = "200", description = "Get user model successfully"),
             @ApiResponse(responseCode = "404", description = "Invalid User ID") // bad request
     })
-    @GetMapping("/users/{id:\\\\\\\\d+}")
+    @GetMapping("/users/{id:\\d+}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public DemoModel getUserByID(@PathVariable int id) {
-        DemoModel demoModel = this.demoService.getUserByID(id);
-        if(demoModel == null) {
+    public UserDTO getUserByID(@PathVariable int id) {
+        UserDTO userdto = this.usersService.getUserByID(id);
+        if(userdto == null) {
             //  throw new RuntimeException("demoModel can't be null");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the id can't be found");
         }
-        return demoModel;
+        return userdto;
     }
 
     @Operation(summary = "Get user model by Name", description = "Get user model by Name")
@@ -93,10 +94,17 @@ public class APIController {
         return Map.of("success", isSuccess);
     }
 
-    @PatchMapping("/admin/users/{id}")
+    @PatchMapping("/admin/users/{id:\\d+}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Map<String, Boolean> setUserNameByID(@PathVariable int id, @RequestParam String name) {
         boolean isSuccess = this.demoService.updateUserName(id, name);
+        return Map.of("success", isSuccess);
+    }
+
+    @PatchMapping("/admin/users/{name:[a-zA-Z]+}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public Map<String, Boolean> setUserPasswordByUsername(@PathVariable String name, @RequestParam String password) {
+        boolean isSuccess = this.usersService.updatePassword(name, password);
         return Map.of("success", isSuccess);
     }
 
