@@ -16,7 +16,7 @@ public class UsersService {
         if (users == null) {
             return null;
         }
-        UserDTO userDto = new UserDTO(users.getUsername(), users.getPassword(), users.isEnabled());
+        UserDTO userDto = new UserDTO(users.getId(), users.getUsername(), users.getPassword(), users.isEnabled());
         return userDto;
     }
     
