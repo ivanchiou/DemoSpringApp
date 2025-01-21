@@ -7,9 +7,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 import lombok.Data;
 
 @Entity(name = "users")
+@Table(name = "users", indexes = {
+    @Index(name="idx_email", columnList = "email"),
+    @Index(name="idx_age_salary", columnList = "age, salary")
+})
 @Data
 public class Users {
     @Id
@@ -20,6 +26,9 @@ public class Users {
     @NotNull
     private String username;
 
+    private String email;
     private String password;
-    private boolean enabled;  
+    private int age;
+    private int salary;
+    private boolean enabled;
 }
