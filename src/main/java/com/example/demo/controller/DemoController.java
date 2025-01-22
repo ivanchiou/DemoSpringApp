@@ -72,12 +72,10 @@ public class DemoController {
 
 
     @GetMapping("/model/{name}")
-    public DemoModel getUserByName(@PathVariable String name) {
-        DemoModel demoModel = demoService.getUserByName(name);
-        if(demoModel == null) {
-            throw new RuntimeException("demoModel can't be null");
-        }
-        return demoModel;
+    public ResponseEntity<DemoModel> getUserByName(@PathVariable String name) {
+        return this.demoService.getUserByName(name)
+            .map(model -> new ResponseEntity<>(model, HttpStatus.OK)) // 如果存在，返回 200 和模型
+            .orElseThrow(() -> new RuntimeException("DemoModel can't be null for name: " + name)); // 如果不存在，拋出異常
     }
 
     @PostMapping("/upload")

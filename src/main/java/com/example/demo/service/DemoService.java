@@ -5,14 +5,25 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.DemoModel;
 import com.example.demo.model.DemoRepository;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class DemoService {
     @Autowired
     private DemoRepository demoRepository;
 
     // 根據名字查詢使用者
-    public DemoModel getUserByName(String name) {
-        return this.demoRepository.findByName(name);
+    public Optional<DemoModel> getUserByName(String name) {
+        return Optional.ofNullable(this.demoRepository.findByName(name));
+    }
+
+    public List<DemoModel> filterModelsByName(String keyword) {
+        List<DemoModel> models = this.demoRepository.findAll();
+        return models.stream()
+                    .filter(model -> model.getName().contains(keyword))
+                    .collect(Collectors.toList());
     }
 
     public DemoModel getUserByID(int id) {
