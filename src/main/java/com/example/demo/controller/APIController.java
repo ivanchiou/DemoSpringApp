@@ -18,14 +18,18 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.model.DemoModel;
+import com.example.demo.model.Post;
+import com.example.demo.model.PostDTO;
 import com.example.demo.model.UserDTO;
 import com.example.demo.model.UserModelRequestEntity;
 import com.example.demo.service.DemoService;
-import com.example.demo.service.UsersService;
+import com.example.demo.service.UserService;
+import com.example.demo.service.PostService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,7 +53,10 @@ public class APIController {
     private DemoService demoService;
 
     @Autowired
-    private UsersService usersService;
+    private UserService usersService;
+
+    @Autowired
+    private PostService postService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -161,5 +168,10 @@ public class APIController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(Map.of("message", "Logout successful"));
+    }
+
+    @PostMapping("/posts")
+    public Post createPost(@RequestBody PostDTO post) {
+        return postService.createPost(post); // 使用 Spring Data MongoDB 提供的保存方法
     }
 }

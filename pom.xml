@@ -111,6 +111,11 @@
 			<version>${mysql.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- enable nosql mongodb -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
 		<!-- enable lombok library -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>

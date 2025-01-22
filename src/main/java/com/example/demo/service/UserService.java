@@ -1,22 +1,22 @@
 package com.example.demo.service;
 
 import com.example.demo.model.UserDTO;
-import com.example.demo.model.Users;
+import com.example.demo.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.demo.model.UserDAOInterface;
 
 @Service
-public class UsersService {
+public class UserService {
     @Autowired
     private UserDAOInterface userDAO;
 
     public UserDTO getUserByID(int id) {
-        Users users = userDAO.findById(id);
-        if (users == null) {
+        User user = userDAO.findById(id);
+        if (user == null) {
             return null;
         }
-        UserDTO userDto = new UserDTO(users.getId(), users.getUsername(), users.getPassword(), users.isEnabled());
+        UserDTO userDto = new UserDTO(user.getId(), user.getUsername(), user.getPassword(), user.isEnabled());
         return userDto;
     }
     
