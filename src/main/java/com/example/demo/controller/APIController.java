@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.model.DemoModel;
 import com.example.demo.model.Post;
 import com.example.demo.model.UserDTO;
+import com.example.demo.model.PostDTO;
 import com.example.demo.model.UserModelRequestEntity;
 import com.example.demo.service.DemoService;
 import com.example.demo.service.PostService;
@@ -171,7 +172,7 @@ public class APIController {
     }
 
     @PostMapping("/posts")
-    public Post createPost(@RequestParam String content, @RequestParam String author) {
-        return postService.createPost(content, author);
+    public Post createPost(@RequestBody PostDTO postDto) {
+        return postService.createPost(postDto);
     }
 }
