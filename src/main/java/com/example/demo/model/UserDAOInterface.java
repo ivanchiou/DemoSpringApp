@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 public interface UserDAOInterface {
-    Users findById(int id);
-    Users findUserByUsername(String username);
+    User findById(int id);
+    User findUserByUsername(String username);
     boolean updatePassword(String username, String password);
 }

@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.UserDTO;
-import com.example.demo.model.Users;
+import com.example.demo.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.demo.model.UserDAOInterface;
@@ -12,7 +12,7 @@ public class UsersService {
     private UserDAOInterface userDAO;
 
     public UserDTO getUserByID(int id) {
-        Users users = userDAO.findById(id);
+        User users = userDAO.findById(id);
         if (users == null) {
             return null;
         }

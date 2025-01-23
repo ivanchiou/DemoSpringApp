@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.model.DemoModel;
+import com.example.demo.model.Post;
 import com.example.demo.model.UserDTO;
 import com.example.demo.model.UserModelRequestEntity;
 import com.example.demo.service.DemoService;
+import com.example.demo.service.PostService;
 import com.example.demo.service.UsersService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +41,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @Tag(name = "Authentication", description = "Operations for authentication")
@@ -50,6 +54,9 @@ public class APIController {
 
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    private PostService postService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -161,5 +168,10 @@ public class APIController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(Map.of("message", "Logout successful"));
+    }
+
+    @PostMapping("/posts")
+    public Post createPost(@RequestParam String content, @RequestParam String author) {
+        return postService.createPost(content, author);
     }
 }

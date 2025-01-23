@@ -14,14 +14,14 @@ public class UserDAOImpl implements UserDAOInterface {
     private EntityManager entityManager;
     
     @Override
-    public Users findById(int id) {
-        return entityManager.find(Users.class, id);
+    public User findById(int id) {
+        return entityManager.find(User.class, id);
     }
 
     @Override
-    public Users findUserByUsername(String username) {
+    public User findUserByUsername(String username) {
         try {
-            return entityManager.createQuery("SELECT u FROM users u where u.username = :username", Users.class)
+            return entityManager.createQuery("SELECT u FROM users u where u.username = :username", User.class)
                     .setParameter("username", username)
                     .getSingleResult();
         } catch (NoResultException e) {

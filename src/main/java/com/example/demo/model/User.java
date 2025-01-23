@@ -17,7 +17,7 @@ import lombok.Data;
     @Index(name="idx_age_salary", columnList = "age, salary")
 })
 @Data
-public class Users {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
