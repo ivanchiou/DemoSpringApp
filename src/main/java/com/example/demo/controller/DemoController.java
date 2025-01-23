@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Optional;
 
 import com.example.demo.model.DemoModel;
 import com.example.demo.model.DemoModelRequestEntity;
@@ -72,12 +73,10 @@ public class DemoController {
 
 
     @GetMapping("/model/{name}")
-    public DemoModel getUserByName(@PathVariable String name) {
-        DemoModel demoModel = demoService.getUserByName(name);
-        if(demoModel == null) {
-            throw new RuntimeException("demoModel can't be null");
-        }
-        return demoModel;
+    public ResponseEntity<DemoModel> getUserByName(@PathVariable String name) {
+        return this.demoService.getUserByName(name)
+                .map(model -> new ResponseEntity<>(model, HttpStatus.OK))
+                .orElseThrow(() -> new RuntimeException("demoModel can't be null for name: "+ name));
     }
 
     @PostMapping("/upload")
