@@ -39,6 +39,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())) // 設置 CORS 配置
             .csrf(AbstractHttpConfigurer::disable)
+            .requiresChannel(channel -> channel.anyRequest().requiresSecure()) // 強制 HTTPS
             .authorizeHttpRequests(authroize -> authroize
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/page/login", "/api/auth/**").permitAll()

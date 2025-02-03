@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.demo.model.UserDAOInterface;
 
+import org.springframework.cache.annotation.Cacheable;
+
 @Service
 public class UsersService {
     @Autowired
     private UserDAOInterface userDAO;
 
+    @Cacheable(value = "users", key = "#id") 
     public UserDTO getUserByID(int id) {
         User users = userDAO.findById(id);
         if (users == null) {

@@ -1,7 +1,6 @@
 package com.example.demo.model;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-public interface PostRepository extends MongoRepository<Post, String>{ 
+public interface PostRepository extends JpaRepository<Post, Integer>{ 
     Post findByContent(String content);
 }

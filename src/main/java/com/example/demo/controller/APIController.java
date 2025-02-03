@@ -172,7 +172,7 @@ public class APIController {
     }
 
     @PostMapping("/posts")
-    public Post createPost(@RequestBody PostDTO postDto) {
-        return postService.createPost(postDto);
+    public ResponseEntity<Post> createPost(@RequestBody PostDTO postDto) {
+        return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
 }

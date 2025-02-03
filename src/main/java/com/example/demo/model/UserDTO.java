@@ -1,8 +1,11 @@
 package com.example.demo.model;
+import java.io.Serializable;
+
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class UserDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int id;
     private String username;
     private String password;

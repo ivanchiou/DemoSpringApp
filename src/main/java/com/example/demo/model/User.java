@@ -1,14 +1,21 @@
 package com.example.demo.model;
 
+import java.util.List;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Table;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Entity(name = "users")
@@ -17,6 +24,8 @@ import lombok.Data;
     @Index(name="idx_age_salary", columnList = "age, salary")
 })
 @Data
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +34,9 @@ public class User {
     @UniqueElements
     @NotNull
     private String username;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Post> posts;
 
     private String email;
     private String password;

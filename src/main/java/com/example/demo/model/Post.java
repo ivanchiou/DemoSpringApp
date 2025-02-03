@@ -1,25 +1,30 @@
 package com.example.demo.model;
+
 import java.time.LocalDateTime;
-
-import org.bson.types.ObjectId;
+import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.Data;
 
-@Document(collection = "posts")
-@Data //自動設定getter和setter
+@Entity(name = "posts")
+@Table(name = "posts")
+@EntityListeners(AuditingEntityListener.class)
+@Data // 自動設定 getter 和 setter
 public class Post {
     @Id
-    private ObjectId _id;
+    private int id;
 
     private String content;
 
     private String author;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createAt;
 
     @LastModifiedDate
