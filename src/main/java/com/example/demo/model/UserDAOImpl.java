@@ -38,4 +38,16 @@ public class UserDAOImpl implements UserDAOInterface {
                 .executeUpdate();
         return updateCount > 0;
     }
+
+    @Override
+    public User findUserWithPosts(int id) {
+        try {
+            return entityManager.createQuery(
+                    "SELECT u FROM users u JOIN FETCH u.posts WHERE u.id = :id", User.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

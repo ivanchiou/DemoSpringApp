@@ -1,5 +1,6 @@
 package com.example.demo.model;
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Data;
 
@@ -10,6 +11,7 @@ public class UserDTO implements Serializable {
     private String username;
     private String password;
     private boolean enabled;
+    private List<PostDTO> posts;
 
     public UserDTO (int id, String username, String password, boolean enabled) {
         this.id = id;

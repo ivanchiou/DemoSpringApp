@@ -75,17 +75,22 @@ public class APIController {
         return "Hello, Swagger!";
     }
 
-    @Operation(summary = "Get user model by ID", description = "Get user model by ID")
+    @Operation(summary = "Get user model by ID", description = "Get user model with posts by ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Get user model successfully"),
-            @ApiResponse(responseCode = "404", description = "Invalid User ID") // bad request
+            @ApiResponse(responseCode = "200", description = "Get user model with posts successfully"),
+            @ApiResponse(responseCode = "404", description = "User ID not found") // bad request
     })
     @GetMapping("/users/{id:\\d+}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public UserDTO getUserByID(@PathVariable int id) {
-        UserDTO userdto = this.usersService.getUserByID(id);
+    public UserDTO getUserWithPostsByID(@PathVariable int id,
+                                        @RequestParam(name = "posts", required = false, defaultValue = "false") boolean includePosts) {
+        UserDTO userdto = null;
+        if (includePosts == true) {
+            userdto = this.usersService.findUserWithPosts(id);
+        } else {
+            userdto = this.usersService.getUserByID(id);
+        }
         if(userdto == null) {
-            //  throw new RuntimeException("demoModel can't be null");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the id can't be found");
         }
         return userdto;
