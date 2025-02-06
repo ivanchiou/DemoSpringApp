@@ -67,6 +67,7 @@
     <div class="login-container">
         <h1>Login</h1>
         <form action="/api/auth/login" method="post">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>

@@ -20,6 +20,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
+
 @Controller
 @RequestMapping("/page")
 public class PageController {
@@ -33,7 +36,8 @@ public class PageController {
         @RequestParam(value = "description", required = false, defaultValue = "我是描述!") String description,
         Model model
     ) {
-        model.addAttribute("message", message);
+        String safeMessage = Jsoup.clean(message, Safelist.basic());
+        model.addAttribute("message", safeMessage);
         model.addAttribute("description", description);
         return "index";
     }
