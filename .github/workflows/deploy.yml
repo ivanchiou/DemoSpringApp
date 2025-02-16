@@ -23,6 +23,11 @@ jobs:
       run: |
         mvn clean package -DskipTests  # Skip tests for faster builds
 
+    - name: Restore keystore.p12 from GitHub Secret
+      run: |
+        mkdir -p src/main/resources/cert
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/cert/keystore.p12
+
     - name: Set up SSH connection
       run: |
         mkdir -p ~/.ssh
