@@ -27,6 +27,13 @@ jobs:
     - name: Build the project
       run: |
         mvn clean package -DskipTests  # Skip tests for faster builds
+    
+    - name: Upload JAR to GitHub Releases
+      uses: softprops/action-gh-release@v2
+      with:
+        files: target/*.jar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up SSH connection
       run: |
