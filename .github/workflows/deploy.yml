@@ -27,11 +27,26 @@ jobs:
     - name: Build the project
       run: |
         mvn clean package -DskipTests  # Skip tests for faster builds
+
+    - name: Generate Tag
+      id: generate_tag
+      run: |
+        TAG_NAME="v$(date +'%Y%m%d-%H%M%S')"
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        echo "Generated Tag: $TAG_NAME"
+
+    - name: Create Git Tag
+      run: |
+        git tag $TAG_NAME
+        git push origin $TAG_NAME
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Upload JAR to GitHub Releases
       uses: softprops/action-gh-release@v2
       with:
         files: target/*.jar
+        body: "Auto-generated release ${{ env.TAG_NAME }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
