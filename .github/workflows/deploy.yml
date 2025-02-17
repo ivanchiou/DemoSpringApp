@@ -27,7 +27,6 @@ jobs:
     - name: Build the project
       run: |
         mvn clean package -DskipTests  # Skip tests for faster builds
-        jar tf target/*.jar | grep views
 
     - name: Set up SSH connection
       run: |
