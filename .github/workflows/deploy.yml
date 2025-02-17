@@ -45,6 +45,7 @@ jobs:
     - name: Upload JAR to GitHub Releases
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: ${{ env.TAG_NAME }}
         files: target/*.jar
         body: "Auto-generated release ${{ env.TAG_NAME }}"
       env:
