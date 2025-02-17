@@ -40,5 +40,5 @@ jobs:
         scp -i ~/.ssh/id_rsa target/*.jar ${{ vars.GCP_VM_USER }}@${{ vars.GCP_VM_IP }}:/home/${{ vars.GCP_VM_USER }}/app.jar
         ssh -i ~/.ssh/id_rsa ${{ vars.GCP_VM_USER }}@${{ vars.GCP_VM_IP }} << 'EOF'
           sudo pkill -f "java -jar" || true
-          nohup java -jar /home/${{ vars.GCP_VM_USER }}/app.jar --spring.config.location=/home/${{ vars.GCP_VM_USER }}/application.properties > app.log 2>&1 &
+          nohup sudo java -jar /home/${{ vars.GCP_VM_USER }}/app.jar --spring.config.location=/home/${{ vars.GCP_VM_USER }}/application.properties > app.log 2>&1 &
         EOF
