@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 openjdk:17-slim
+FROM openjdk:17-slim
 
 # 設定環境變數，方便後續使用
 ENV MAVEN_VERSION=3.9.9
