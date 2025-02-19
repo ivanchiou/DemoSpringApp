@@ -27,5 +27,12 @@ RUN cp target/*.jar app.jar
 
 EXPOSE 8080 443
 
-# 啟動應用程式
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# 設定 keystore 讀取的環境變數（可透過 docker run -e 覆蓋）
+ENV KEYSTORE_PATH=classpath:cert/keystore.p12
+ENV KEYSTORE_PASSWORD=changeitPA
+
+# 設定 application.properties 位置為環境變數，預設值為 /app/application.properties
+ENV SPRING_CONFIG_LOCATION=/app/application.properties
+
+# 啟動應用程式，從環境變數讀取 keystore
+ENTRYPOINT ["sh", "-c", "java -Djavax.net.ssl.keyStore=${KEYSTORE_PATH} -Djavax.net.ssl.keyStorePassword=${KEYSTORE_PASSWORD} -jar app.jar --spring.config.location=${SPRING_CONFIG_LOCATION}"]
