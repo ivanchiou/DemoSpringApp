@@ -84,7 +84,7 @@ jobs:
           sudo docker stop demo-spring-app || true
           sudo docker rm demo-spring-app || true
           sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/demo-spring-app:${{ env.TAG_NAME }}
-          sudo docker run -d --name demo-spring-app -p 8080:8080 -p 443:443 --network=host \
+          sudo docker run -d --name demo-spring-app -p 80:8080 -p 443:443 --network=host \
             -e KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
             -v /home/${{ vars.GCP_VM_USER }}/config/application.properties:/app/application.properties \
             ${{ secrets.DOCKER_HUB_USERNAME }}/demo-spring-app:${{ env.TAG_NAME }}
