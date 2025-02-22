@@ -114,7 +114,11 @@ public class PageController {
 
         return "success";
     }
-    
+
+    @GetMapping("/websocket")
+    public String websocketTest() {
+        return "websocket";
+    }   
 
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e, Model model) {
