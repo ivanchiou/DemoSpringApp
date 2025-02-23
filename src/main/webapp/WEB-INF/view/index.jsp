@@ -1,7 +1,36 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%
+    response.setHeader("Cache-Control", "max-age=31536000, must-revalidate");
+%>
 <html>
 <head>
+  <title text=${title}>Default Title</title>
+  <meta name="description" content=${description} />
+  <link rel="canonical" href=${canonicalUrl} />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:image" content="https://localhost/images/burger.jpg" />
+  <meta property="og:url" content="${canonicalUrl}" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="https://localhost/images/burger.jpg" />
+  
 </head>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "${title}",
+    "image": "https://localhost/images/burger.jpg",
+    "description": "${description}",
+    "brand": {
+      "@type": "Brand",
+      "name": "SpringBootBrand"
+    }
+  }
+</script>  
 <style>
 body {
   background-color: lightblue;

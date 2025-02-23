@@ -37,6 +37,9 @@ public class PageController {
         Model model
     ) {
         String safeMessage = Jsoup.clean(message, Safelist.basic());
+        model.addAttribute("title", "首頁");
+        model.addAttribute("description", "這是首頁");
+        model.addAttribute("canonicalUrl", "https://localhost/page/");
         model.addAttribute("message", safeMessage);
         model.addAttribute("description", description);
         return "index";
