@@ -10,6 +10,21 @@
     <input type="text" id="message" placeholder="Enter message"/>
     <button onclick="sendMessage()">Send</button>
     <ul id="messages"></ul>
+    <button onclick="sendRabbitMessage()">Send to RabbitMQ</button>
+
+    <script>
+        function sendRabbitMessage() {
+            var msg = document.getElementById("message").value;
+            fetch('/rabbitmq/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(msg)
+            }).then(response => response.text())
+            .then(data => console.log(data));
+        }
+    </script>
 
     <script>
         var socket = new SockJS('/ws');
